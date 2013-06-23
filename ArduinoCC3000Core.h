@@ -13,6 +13,18 @@
 
 #define WLAN_IRQ_INTNUM	1		// The attachInterrupt() number that corresponds
                                 // to WLAN_IRQ
+
+#ifndef MISO
+#define MISO 12
+#endif
+
+#ifndef MOSI
+#define MOSI 11
+#endif
+
+#ifndef SCK
+#define SCK 13
+#endif
                                 
                                 
 
@@ -46,14 +58,14 @@
    
    http://processors.wiki.ti.com/index.php/Tiny_Driver_Support
    
-  CC3000’s new driver has flexible memory compile options.
+  CC3000's new driver has flexible memory compile options.
   
   This feature comes in handy when we want to use a limited RAM size MCU.
   
   Using The Tiny Driver Compilation option will create a tiny version of our
   host driver with lower data, stack and code consumption.
   
-  By enabling this feature, host driver’s RAM consumption can be reduced to
+  By enabling this feature, host driver's RAM consumption can be reduced to
   minimum of 251 bytes.
   
   The Tiny host driver version will limit the host driver API to the most

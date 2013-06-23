@@ -18,4 +18,4 @@ extern void CC3000InterruptHandler(void);
 
 extern short SPIInterruptsEnabled;
 
-//extern unsigned char wlan_tx_buffer[];
+extern unsigned char wlan_tx_buffer[];

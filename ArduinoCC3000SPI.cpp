@@ -110,9 +110,9 @@ unsigned char wlan_tx_buffer[CC3000_TX_BUFFER_SIZE];
 
 byte SPIPump(byte data) {
 
-	if (USE_HARDWARE_SPI) {
+#if(USE_HARDWARE_SPI)
 		return(SPI.transfer(data));
-		}
+#else
 	
 	byte receivedData=0;
 	
@@ -143,6 +143,7 @@ byte SPIPump(byte data) {
 		}
 			
 	return(receivedData);
+#endif
 	}
 
 
