@@ -9,13 +9,6 @@
 
 
 
-#ifndef TEENSY3
-#define digitalReadFast(pin)		digitalRead(pin)
-#define digitalWriteFast(pin,state)	digitalWrite(pin,state)
-#endif
-
-
-
 // This flag lets the interrupt handler know if it should respond to
 // the WL_SPI_IRQ pin going low or not
 short SPIInterruptsEnabled=0;
@@ -31,10 +24,6 @@ short SPIInterruptsEnabled=0;
 
 #define HI(value)               (((value) & 0xFF00) >> 8)
 #define LO(value)               ((value) & 0x00FF)
-
-#define ASSERT_CS()		digitalWriteFast(WLAN_CS,LOW)
-
-#define DEASSERT_CS()		digitalWriteFast(WLAN_CS,HIGH)
 
 #define HEADERS_SIZE_EVNT       (SPI_HEADER_SIZE + 5)
 
@@ -108,12 +97,11 @@ unsigned char wlan_tx_buffer[CC3000_TX_BUFFER_SIZE];
 // the Arduino's built in hardware SPI, otherwise we bit-bang the pin
 // flipping.
 
+#if(USE_HARDWARE_SPI) 
+#define SPIPump(data)	SPI.transfer(data)
+#else
 byte SPIPump(byte data) {
 
-#if(USE_HARDWARE_SPI)
-		return(SPI.transfer(data));
-#else
-	
 	byte receivedData=0;
 	
 	for (int8_t i=7; i>=0; i--) {
@@ -143,8 +131,8 @@ byte SPIPump(byte data) {
 		}
 			
 	return(receivedData);
-#endif
 	}
+#endif
 
 
 
@@ -236,7 +224,7 @@ SpiTriggerRxProcessing(void)
 	// Trigger Rx processing
 	//
 	SpiPauseSpi();
-	DEASSERT_CS();
+	Set_CC3000_CS_NotActive();
         
         // The magic number that resides at the end of the TX/RX buffer (1 byte after the allocated size)
         // for the purpose of detection of the overrun. If the magic number is overriten - buffer overrun 
@@ -363,7 +351,7 @@ SpiFirstWrite(unsigned char *ucBuf, unsigned short usLength)
     //
     // workaround for first transaction
     //
-    ASSERT_CS();
+    Set_CC3000_CS_Active();
 	
     delayMicroseconds(50);
     
@@ -376,7 +364,7 @@ SpiFirstWrite(unsigned char *ucBuf, unsigned short usLength)
 
     sSpiInformation.ulSpiState = eSPI_STATE_IDLE;
     
-    DEASSERT_CS();
+    Set_CC3000_CS_NotActive();
 
     return(0);
 }
@@ -475,7 +463,7 @@ SpiWrite(unsigned char *pUserBuffer, unsigned short usLength)
 		//
 		// Assert the CS line and wait till SSI IRQ line is active and then initialize write operation
 		//
-		ASSERT_CS();
+		Set_CC3000_CS_Active();
 
 		//
 		// Re-enable IRQ - if it was not disabled - this is not a problem...
@@ -491,7 +479,7 @@ SpiWrite(unsigned char *pUserBuffer, unsigned short usLength)
 
 			sSpiInformation.ulSpiState = eSPI_STATE_IDLE;
 
-			DEASSERT_CS();
+			Set_CC3000_CS_NotActive();
 		}
 	}
 
@@ -751,7 +739,7 @@ void CC3000InterruptHandler(void)
 			sSpiInformation.ulSpiState = eSPI_STATE_READ_IRQ;
 			
 			/* IRQ line goes down - start reception */
-			ASSERT_CS();
+			Set_CC3000_CS_Active();
 
 			//
 			// Wait for TX/RX Compete which will come as DMA interrupt
@@ -769,7 +757,7 @@ void CC3000InterruptHandler(void)
 
 			sSpiInformation.ulSpiState = eSPI_STATE_IDLE;
 
-			DEASSERT_CS();
+			Set_CC3000_CS_NotActive();
 		}
 		else {
 			}
@@ -849,6 +837,32 @@ SpiOpen(gcSpiHandleRx pfRxHandler)
 
 
 
+
+
+//*****************************************************************************
+//
+//!  SpiClose
+//!
+//!  \param  none
+//!
+//!  \return none
+//!
+//!  \brief  Cofigure the SSI
+//
+//*****************************************************************************
+void
+SpiClose(void)
+{
+	if (sSpiInformation.pRxPacket)
+	{
+		sSpiInformation.pRxPacket = 0;
+	}
+
+	//
+	//	Disable Interrupt in GPIOA module...
+	//
+    tSLInformation.WlanInterruptDisable();
+}
 
 
 

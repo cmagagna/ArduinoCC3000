@@ -2,7 +2,7 @@
 *
 *  This file is part of the ArduinoCC3000 library.
 
-*  Version 1.0
+*  Version 1.0.1
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -799,7 +799,7 @@ wlan_ioctl_del_profile(unsigned long ulIndex)
 	// Initiate a HCI command
 	hci_command_send(HCI_CMND_WLAN_IOCTL_DEL_PROFILE,
 									 ptr, WLAN_DEL_PROFILE_PARAMS_LEN);
-	
+									 
 	// Wait for command complete event
 	SimpleLinkWaitEvent(HCI_CMND_WLAN_IOCTL_DEL_PROFILE, &ret);
 	
@@ -1290,7 +1290,6 @@ wlan_smart_config_process()
 	
 	return returnValue;
 }
-}	// todo: figure out why I had to add this
 #endif //CC3000_UNENCRYPTED_SMART_CONFIG		
 
 //*****************************************************************************

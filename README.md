@@ -15,7 +15,7 @@ http://processors.wiki.ti.com/index.php/CC3000
 *
 *  ArduinoCC3000.ino - Initial version of the Arduino CC3000 library.
 *
-*  Version 1.0
+*  Version 1.01
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -27,6 +27,24 @@ http://processors.wiki.ti.com/index.php/CC3000
 *
 ****************************************************************************
 
+Changes since 1.0:
+
+1. Fixed bug in TI's security.h where they missed a closing "}" so I had 
+added it at the end of wlan.cpp (thanks to Frank Vannieuwkerke and alvarolb)
+
+2. Fixed documentation about using INPUT_PULLUP on a 5V system (thanks to
+Joseph Malkom)
+
+3. Started going through TI's code and rewriting their use of 'longs' 
+everywhere to 'bytes' or 'ints' to save RAM.
+
+4. Added functionality to the demo program ArduinoCC3000.ino to demonstrate
+Smart Config, DNS lookup, ping, etc.
+
+5. Rewrote ArduinoCC3000Core.h to recognize Teensy 3.0 software SPI 
+directly.
+
+****************************************************************************
 
 
 To connect an Arduino to the CC3000 you'll need to make these 6 connections
@@ -81,14 +99,16 @@ WARNING #3: The CC3000's IO pins are not 5V tolerant. If you're using a 5V
 Arduino you will need a level shifter to convert these signals to 3.3V
 so you don't blow up the module. 
 
-You'll need to shift the pins for WLAN_CS, MOSI, SCK, and WLAN_EN. The other
-2 pins (WLAN_IRQ and MISO) can be connected directly because they're input
-pins for the Arduino, and the Arduino can read 3.3V signals directly.
+You'll need to shift the pins for WLAN_CS, MOSI, SCK, and WLAN_EN. MISO can be
+connected directly because it's an input pin for the Arduino and the Arduino
+can read 3.3V signals directly. For WLAN_IRQ use a pullup resistor of 10K to
+100K Ohm -- one leg to the Arduino input pin + CC3000 SPI_IRQ pin, the other
+leg to +3.3V.
 
 You can use a level shifter chip like the 74LVC245 or TXB0104 or you can use
 a pair of resistors to make a voltage divider like this:
 
-Arduino pin -----> 560 Ohm -----> 1K Ohm -----> GND
+Arduino pin -----> 560 Ohm --+--> 1K Ohm -----> GND
                              |
                              |
                              +---> CC3000 pin

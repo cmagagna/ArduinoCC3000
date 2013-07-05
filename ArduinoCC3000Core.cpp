@@ -11,7 +11,7 @@
 *  a TI MSP430, a PIC, etc. but the core library shouldn't have to be
 *  changed.
 *  
-*  Version 1.0
+*  Version 1.0.1
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -33,10 +33,8 @@
 
 
 
-#ifndef TEENSY3
-#define digitalReadFast(pin)		digitalRead(pin)
-#define digitalWriteFast(pin,state)	digitalWrite(pin,state)
-#endif
+
+
 
 
 
@@ -54,11 +52,25 @@ volatile unsigned char ucStopSmartConfig;
 #define CC3000_APP_BUFFER_SIZE         (5)
 #define CC3000_RX_BUFFER_OVERHEAD_SIZE (20)
 
+/*
 unsigned char pucCC3000_Rx_Buffer[CC3000_APP_BUFFER_SIZE + CC3000_RX_BUFFER_OVERHEAD_SIZE];
+*/
 
 
 
 
+/* The original version of the function below had Serial.prints()
+   to display an event, but since an async event can happen at any time,
+   even in the middle of another Serial.print(), sometimes the sketch
+   would lock up because we were trying to print in the middle of
+   a print.
+   
+   So now we just set a flag and write to a string, and the master
+   loop can deal with it when it wants.
+*/   
+byte asyncNotificationWaiting=false;
+long lastAsyncEvent;
+byte dhcpIPAddress[4];
 
 
 
@@ -79,24 +91,26 @@ unsigned char pucCC3000_Rx_Buffer[CC3000_APP_BUFFER_SIZE + CC3000_RX_BUFFER_OVER
 
 void CC3000_AsyncCallback(long lEventType, char * data, unsigned char length) {
 
+	lastAsyncEvent = lEventType;
+
 	switch (lEventType) {
   
 		case HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE:
 			ulSmartConfigFinished = 1;
 			ucStopSmartConfig     = 1;
-			Serial.println("CC3000 Async event: Simple config done"); 
+			asyncNotificationWaiting=true;
 			break;
 			
 		case HCI_EVNT_WLAN_UNSOL_CONNECT:
 			ulCC3000Connected = 1;
-			Serial.println("CC3000 Async event: Unsolicited connect");
+			asyncNotificationWaiting=true;
 			break;
 			
 		case HCI_EVNT_WLAN_UNSOL_DISCONNECT:
 			ulCC3000Connected = 0;
 			ulCC3000DHCP      = 0;
-			ulCC3000DHCP_configured = 0;
-			Serial.println("CC3000 Async event: Unsolicted disconnect");
+			ulCC3000DHCP_configured = 0;			
+			asyncNotificationWaiting=true;
 			break;
 			
 		case HCI_EVNT_WLAN_UNSOL_DHCP:
@@ -106,23 +120,29 @@ void CC3000_AsyncCallback(long lEventType, char * data, unsigned char length) {
 			// only if status is OK, the flag is set to 1 and the addresses are valid
 			if ( *(data + NETAPP_IPCONFIG_MAC_OFFSET) == 0) {
 				ulCC3000DHCP = 1;
-				Serial.print("CC3000 Async event: Got IP address via DHCP: ");
-				Serial.print(data[3], DEC); Serial.print(".");
-				Serial.print(data[2], DEC); Serial.print(".");
-				Serial.print(data[1], DEC); Serial.print(".");
-				Serial.println(data[0], DEC);
+				dhcpIPAddress[0] = data[3];
+				dhcpIPAddress[1] = data[2];
+				dhcpIPAddress[2] = data[1];
+				dhcpIPAddress[3] = data[0];
 				}
 			else {
 				ulCC3000DHCP = 0;
-				Serial.println("CC3000 Async event: Unsolicited DHCP, no IP address");
+				dhcpIPAddress[0] = 0;
+				dhcpIPAddress[1] = 0;
+				dhcpIPAddress[2] = 0;
+				dhcpIPAddress[3] = 0;
 				}
+			asyncNotificationWaiting=true;
 			break;
 			
 		case HCI_EVENT_CC3000_CAN_SHUT_DOWN:
 			OkToDoShutDown = 1;
-			Serial.println("CC3000 Async event: OK to shut down");
+			asyncNotificationWaiting=true;
 			break;
-		
+						
+		default:
+			asyncNotificationWaiting=true;
+			break;		
 		}
 	}
 
@@ -180,8 +200,8 @@ char *SendBootloaderPatch(unsigned long *Length) {
     and the library reads it directly.
 
 ---------------------------------------------------------------------*/
-long ReadWlanInterruptPin(void) {
-	return(digitalReadFast(WLAN_IRQ));
+inline long ReadWlanInterruptPin(void) {
+	return(Read_CC3000_IRQ_Pin());
 	}
 
 
@@ -204,10 +224,10 @@ long ReadWlanInterruptPin(void) {
 void WriteWlanEnablePin( unsigned char val ) {
 
 	if (val) {
-		digitalWriteFast(WLAN_EN, HIGH);
+		digitalWrite(WLAN_EN, HIGH);
 		}
 	else {
-		digitalWriteFast(WLAN_EN, LOW);
+		digitalWrite(WLAN_EN, LOW);
 		}
 	}
 
@@ -264,14 +284,20 @@ void WlanInterruptDisable(void) {
 void CC3000_Init(void) {
 
 	SPIInterruptsEnabled = 0;
+
+	#ifdef TEENSY3
 	pinMode(WLAN_IRQ, INPUT_PULLUP);
+	#else
+	pinMode(WLAN_IRQ, INPUT);
+	#endif
+	
 	attachInterrupt(WLAN_IRQ_INTNUM, CC3000InterruptHandler, FALLING);
 	
 	pinMode(WLAN_EN, OUTPUT);
-	digitalWriteFast(WLAN_EN, LOW);		// make sure it's off until we're ready
+	digitalWrite(WLAN_EN, LOW);	// make sure it's off until we're ready
 	
 	pinMode(WLAN_CS, OUTPUT);
-	digitalWriteFast(WLAN_CS, HIGH);	// turn off CS until we're ready
+	Set_CC3000_CS_NotActive();	// turn off CS until we're ready
 	
 	wlan_init( CC3000_AsyncCallback,
 		SendFirmwarePatch,

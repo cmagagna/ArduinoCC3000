@@ -2,7 +2,7 @@
 *
 *  This file is part of the ArduinoCC3000 library.
 
-*  Version 1.0
+*  Version 1.0.1
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -17,8 +17,16 @@
 *  reference library. Changes to the reference library file,
 *  if any, are listed below:
 *
-*  No changes to this file.
-* 
+*  Added 
+*
+*			#ifdef  __cplusplus
+*			}
+*			#endif
+*			
+*  near the end of the file to fix TI's bug of not closing the
+*           #ifdef  __cplusplus
+*  from line 86
+*
 ****************************************************************************/
 
 
@@ -154,5 +162,9 @@ extern signed long aes_read_key(unsigned char *key);
 extern signed long aes_write_key(unsigned char *key);
 
 #endif //CC3000_UNENCRYPTED_SMART_CONFIG
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif

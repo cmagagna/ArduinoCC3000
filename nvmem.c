@@ -2,7 +2,7 @@
 *
 *  This file is part of the ArduinoCC3000 library.
 
-*  Version 1.0
+*  Version 1.0.1
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -138,8 +138,7 @@ nvmem_read(unsigned long ulFileId, unsigned long ulLength, unsigned long ulOffse
    // Note: It is the user responsibility to ignore the data in case of an error code
 	
 	// Wait for the data in a synchronous way. Here we assume that the buffer is 
-	// big enough to store also parameters of nvmem
-	
+	// big enough to store also parameters of nvmem	
 	SimpleLinkWaitData(buff, 0, 0);
 	
 	return(ucStatus);
