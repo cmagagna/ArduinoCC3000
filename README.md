@@ -8,7 +8,9 @@ ArduinoCC3000
 <p>The .ino file demonstrates basic connectivity etc. For a full API
 reference download the TI documentation at:</p>
 
-http://processors.wiki.ti.com/index.php/CC3000
+<p>http://processors.wiki.ti.com/index.php/CC3000</p>
+
+<p>http://software-dl.ti.com/ecs/simplelink/cc3000/public/doxygen_API/v1.11/html/index.html</p>
 
 <pre>
 /**************************************************************************
@@ -39,7 +41,7 @@ Joseph Malkom)
 everywhere to 'bytes' or 'ints' to save RAM.
 
 4. Added functionality to the demo program ArduinoCC3000.ino to demonstrate
-Smart Config, DNS lookup, ping, etc.
+Smart Config, manually connecting, scanning for APs, etc.
 
 5. Rewrote ArduinoCC3000Core.h to recognize Teensy 3.0 software SPI 
 directly.
