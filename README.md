@@ -17,7 +17,7 @@ reference download the TI documentation at:</p>
 *
 *  ArduinoCC3000.ino - Initial version of the Arduino CC3000 library.
 *
-*  Version 1.01a
+*  Version 1.0.1a
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
