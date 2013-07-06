@@ -1,8 +1,8 @@
 /**************************************************************************
 *
 *  This file is part of the ArduinoCC3000 library.
-
-*  Version 1.0.1
+*
+*  Version 1.0.1a
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -89,6 +89,8 @@
 //******************************************************************************
 //                  INCLUDE FILES
 //******************************************************************************
+
+#include <arduino.h>
 
 #include "cc3000_common.h"
 #include "string.h"
@@ -549,7 +551,7 @@ hci_unsol_event_handler(char *event_hdr)
 	unsigned long NumberOfSentPackets;
 	
 	STREAM_TO_UINT16(event_hdr, HCI_EVENT_OPCODE_OFFSET,event_type);
-	
+		
 	if (event_type & HCI_EVNT_UNSOL_BASE)
 	{
 		switch(event_type)
@@ -576,7 +578,7 @@ hci_unsol_event_handler(char *event_hdr)
 	}
 	
 	if(event_type & HCI_EVNT_WLAN_UNSOL_BASE)
-	{           
+	{	           
 		switch(event_type)
 		{
 		case HCI_EVNT_WLAN_KEEPALIVE:

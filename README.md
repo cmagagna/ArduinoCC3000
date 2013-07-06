@@ -17,7 +17,7 @@ reference download the TI documentation at:</p>
 *
 *  ArduinoCC3000.ino - Initial version of the Arduino CC3000 library.
 *
-*  Version 1.01
+*  Version 1.01a
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -29,7 +29,24 @@ reference download the TI documentation at:</p>
 *
 ****************************************************************************
 
-Changes since 1.0:
+Changes in 1.0.1a:
+
+1. Trying to isolate why Smart Config fails on a Nano.
+
+	The Smart Config cycle is actually working; the profile gets saved to the
+	CC3000 and everything is good, but the HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE
+	event never gets sent to the async event handler so we never know it's done.
+	My temporary workaround is to stop waiting after 30 seconds and hope for the
+	best.
+
+	If the Smart Config cycle worked then we'll connect and get an IP address
+	like normal, if not we'll get stuck waiting to connect.
+
+	This is sub-optimal but is the best solution I have for now.
+
+****************************************************************************
+
+Changes in 1.0.1:
 
 1. Fixed bug in TI's security.h where they missed a closing "}" so I had 
 added it at the end of wlan.cpp (thanks to Frank Vannieuwkerke and alvarolb)

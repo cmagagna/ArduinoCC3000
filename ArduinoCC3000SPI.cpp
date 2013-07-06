@@ -1,3 +1,25 @@
+/**************************************************************************
+*
+*  ArduinoCC3000SPI.cpp - SPI functions to connect an Arduidno to the TI
+*                       CC3000
+*
+*  This code uses the Arduino hardware SPI library (or a bit-banged
+*  SPI for the Teensy 3.0) to send & receive data between the library
+*  API calls and the CC3000 hardware. Every
+*  
+*  Version 1.0.1a
+* 
+*  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
+*
+*  Redistribution and use in source and binary forms, with or without
+*  modification, are permitted provided that the following conditions
+*  are met:
+*
+*  Don't sue me if my code blows up your board and burns down your house
+*
+****************************************************************************/
+
+
 #include <arduino.h>
 #include <SPI.h>
 
@@ -723,19 +745,19 @@ SpiReadHeader(void)
 //#pragma vector=PORT2_VECTOR
 //__interrupt void IntSpiGPIOHandler(void)
 void CC3000InterruptHandler(void)
-{   
+{
+
 	if (!SPIInterruptsEnabled) {
 		return;
 		}
-	
+			
 		if (sSpiInformation.ulSpiState == eSPI_STATE_POWERUP)
 		{
 			/* This means IRQ line was low call a callback of HCI Layer to inform on event */
 	 		sSpiInformation.ulSpiState = eSPI_STATE_INITIALIZED;
 		}
 		else if (sSpiInformation.ulSpiState == eSPI_STATE_IDLE)
-		{
-			
+		{			
 			sSpiInformation.ulSpiState = eSPI_STATE_READ_IRQ;
 			
 			/* IRQ line goes down - start reception */

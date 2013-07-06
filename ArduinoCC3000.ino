@@ -3,7 +3,7 @@
 *  ArduinoCC3000.ino - An application to demo an Arduino connected to the
                        TI CC3000
 *
-*  Version 1.01
+*  Version 1.0.1a
 *
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -421,6 +421,7 @@ char device_name[]	= "CC3000";
 
 void StartSmartConfig(void) {
 	long rval;
+	long timeoutCounter;
 
 	if (!isInitialized) {
 		Serial.println(F("CC3000 not initialized; can't run Smart Config."));
@@ -462,9 +463,17 @@ void StartSmartConfig(void) {
 		return;
 		}
 
-	// Wait for Smartconfig process complete
+	// Wait for Smartconfig process complete, or 30 seconds, whichever
+	// comes first. The Uno isn't seeing the HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE
+	// event and I can't figure out why (it works fine on the Teensy) so my
+	// temporary workaround is I just stop waiting after a while
+	timeoutCounter=millis();
 	while (ulSmartConfigFinished == 0)	{
-		//Blinker();
+		Blinker();
+		if (millis() - timeoutCounter > 30000) {
+			Serial.println(F("    Timed out waiting for Smart Config to finish. Hopefully it did anyway"));
+			break;
+			}
 		}
 
 	Serial.println(F("  Smart Config packet seen!"));
