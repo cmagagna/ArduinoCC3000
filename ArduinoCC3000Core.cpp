@@ -11,7 +11,7 @@
 *  a TI MSP430, a PIC, etc. but the core library shouldn't have to be
 *  changed.
 *  
-*  Version 1.0.1a
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *

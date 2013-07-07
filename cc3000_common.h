@@ -1,8 +1,8 @@
 /**************************************************************************
 *
 *  This file is part of the ArduinoCC3000 library.
-
-*  Version 1.0.1a
+*
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *

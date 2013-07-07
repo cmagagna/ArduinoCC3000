@@ -3,7 +3,7 @@
 *  ArduinoCC3000.ino - An application to demo an Arduino connected to the
                        TI CC3000
 *
-*  Version 1.0.1a
+*  Version 1.0.1b
 *
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -184,12 +184,12 @@ void setup(void) {
 	else {
 		// Faking SPI because the Teensy 3.0's hardware SPI library doesn't
 		// seem to work with the CC3000
-		pinMode(MOSI, OUTPUT);
-		digitalWrite(MOSI, LOW);
-		pinMode(SCK, OUTPUT);
-		digitalWrite(SCK, LOW);
-		pinMode(MISO, INPUT);	// Unlike a regular Arduino, the Teensy 3.0's pins default to 'disabled'
-								// instead of 'input', so we need to explicitly set this here
+		pinMode(WLAN_MOSI, OUTPUT);
+		digitalWrite(WLAN_MOSI, LOW);
+		pinMode(WLAN_SCK, OUTPUT);
+		digitalWrite(WLAN_SCK, LOW);
+		pinMode(WLAN_MISO, INPUT);	// Unlike a regular Arduino, the Teensy 3.0's pins default to 'disabled'
+									// instead of 'input', so we need to explicitly set this here
 		}
 
 	}
@@ -197,6 +197,7 @@ void setup(void) {
 
 
 void loop(void) {
+	char cmd;
 
 	Serial.println();
 	Serial.println(F("+-------------------------------------------+"));
@@ -212,13 +213,18 @@ void loop(void) {
 	Serial.println(F("  7 - Show CC3000 information"));
 	Serial.println();
 
-	while (!Serial.available()) {
-		if (asyncNotificationWaiting) {
-			asyncNotificationWaiting = false;
-			AsyncEventPrint();
+	for (;;) {
+		while (!Serial.available()) {
+			if (asyncNotificationWaiting) {
+				asyncNotificationWaiting = false;
+				AsyncEventPrint();
+				}
+			}
+		cmd = Serial.read();
+		if (cmd!='\n' && cmd!='\r') {
+			break;
 			}
 		}
-	char cmd = Serial.read();
 
 	switch(cmd) {
 		case '1':

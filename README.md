@@ -13,11 +13,12 @@ reference download the TI documentation at:</p>
 <p>http://software-dl.ti.com/ecs/simplelink/cc3000/public/doxygen_API/v1.11/html/index.html</p>
 
 <pre>
-/**************************************************************************
+/***************************************************************************
+****************************************************************************
 *
 *  ArduinoCC3000.ino - Initial version of the Arduino CC3000 library.
 *
-*  Version 1.0.1a
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -27,6 +28,25 @@ reference download the TI documentation at:</p>
 *
 *  Don't sue me if my code blows up your board and burns down your house
 *
+****************************************************************************
+****************************************************************************
+
+Changes in 1.0.1b:
+
+1.	Remapped pins on the Teensy 3.0. Since hardware SPI isn't working
+	there's no reason to waste those pins - any will work. New mapping:
+	
+		Teensy pin | CC3000 name | Name 
+		
+		D25 - SPI_CS - WLAN_CS
+		D26 - SPI_DOUT - WLAN_MISO
+		D27 - SPI_IRQ - WLAN_IRQ
+		D28 - SPI_DIN - WLAN_MOSI
+		D29 - SPI_CLK - WLAN_SCK
+		D30 - VBAT_SW_EN - WLAN_EN
+		
+2. Changed serial input in loop to ignore newlines / returns
+
 ****************************************************************************
 
 Changes in 1.0.1a:

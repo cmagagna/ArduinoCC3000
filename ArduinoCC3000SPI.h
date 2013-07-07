@@ -7,7 +7,7 @@
 *  SPI for the Teensy 3.0) to send & receive data between the library
 *  API calls and the CC3000 hardware. Every
 *  
-*  Version 1.0.1a
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *

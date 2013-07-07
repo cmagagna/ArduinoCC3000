@@ -7,7 +7,7 @@
 *  SPI for the Teensy 3.0) to send & receive data between the library
 *  API calls and the CC3000 hardware. Every
 *  
-*  Version 1.0.1a
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -131,19 +131,19 @@ byte SPIPump(byte data) {
 		receivedData <<= 1;
 	
 		if (data & (1<<i)) {
-			digitalWriteFast(MOSI, HIGH);
+			digitalWriteFast(WLAN_MOSI, HIGH);
 			}
 		else {
-			digitalWriteFast(MOSI, LOW);
+			digitalWriteFast(WLAN_MOSI, LOW);
 			}
 			
-		digitalWriteFast(SCK, HIGH);
+		digitalWriteFast(WLAN_SCK, HIGH);
 		asm volatile("nop");
 		asm volatile("nop");
 			
-		digitalWriteFast(SCK, LOW);
+		digitalWriteFast(WLAN_SCK, LOW);
 		
-		if (digitalReadFast(MISO)) {
+		if (digitalReadFast(WLAN_MISO)) {
 			receivedData |= 1;
 			}
 		

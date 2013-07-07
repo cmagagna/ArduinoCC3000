@@ -2,7 +2,7 @@
 *
 *  This file is part of the ArduinoCC3000 library.
 
-*  Version 1.0.1a
+*  Version 1.0.1b
 * 
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -70,28 +70,19 @@
 #define WLAN_IRQ		3		// Arduino pin connected to CC3000 WLAN_SPI_IRQ
 #define WLAN_IRQ_INTNUM	1		// The attachInterrupt() number that corresponds
                                 // to WLAN_IRQ
+#define WLAN_MOSI		MOSI
+#define WLAN_MISO		MISO
+#define WLAN_SCK		SCK
 #else
 
-#define WLAN_CS			2
-#define WLAN_EN			4
-#define WLAN_IRQ		3
-#define WLAN_IRQ_INTNUM	3
+#define WLAN_CS			25
+#define WLAN_MISO		26
+#define WLAN_IRQ		27
+#define WLAN_IRQ_INTNUM	27		// On the Teensy 3.0 the interrupt # is the same as the pin #
+#define WLAN_MOSI		28
+#define WLAN_SCK		29
+#define WLAN_EN			30
 
-#endif
-
-
-// For some Arduino implemenations these aren't defined, so define them here
-
-#ifndef MISO
-#define MISO 12
-#endif
-
-#ifndef MOSI
-#define MOSI 11
-#endif
-
-#ifndef SCK
-#define SCK 13
 #endif
 
 
