@@ -43,12 +43,14 @@
    this unchanged. If your Arduino can't talk to the CC3000 and you're sure
    your wiring is OK then try changing this. */
    
+/*
 #ifdef TEENSY3
 #define USE_HARDWARE_SPI	false
 #else
 #define USE_HARDWARE_SPI	true
 #endif
-
+*/
+#define USE_HARDWARE_SPI	false
 
 
 
@@ -75,13 +77,22 @@
 #define WLAN_SCK		SCK
 #else
 
-#define WLAN_CS			25
-#define WLAN_MISO		26
-#define WLAN_IRQ		27
-#define WLAN_IRQ_INTNUM	27		// On the Teensy 3.0 the interrupt # is the same as the pin #
-#define WLAN_MOSI		28
-#define WLAN_SCK		29
-#define WLAN_EN			30
+//#define WLAN_CS			25
+//#define WLAN_MISO		26
+//#define WLAN_IRQ		27
+//#define WLAN_IRQ_INTNUM	27		// On the Teensy 3.0 the interrupt # is the same as the pin #
+//#define WLAN_MOSI		28
+//#define WLAN_SCK		29
+//#define WLAN_EN			30
+
+#define WLAN_CS			10
+#define WLAN_MISO		12
+#define WLAN_IRQ		3
+#define WLAN_IRQ_INTNUM	3		// On the Teensy 3.0 the interrupt # is the same as the pin #
+#define WLAN_MOSI		11
+#define WLAN_SCK		13
+#define WLAN_EN			9
+
 
 #endif
 

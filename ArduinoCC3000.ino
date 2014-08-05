@@ -3,7 +3,7 @@
 *  ArduinoCC3000.ino - An application to demo an Arduino connected to the
                        TI CC3000
 *
-*  Version 1.0.1b
+*  Version 1.0.1c
 *
 *  Copyright (C) 2013 Chris Magagna - cmagagna@yahoo.com
 *
@@ -475,7 +475,7 @@ void StartSmartConfig(void) {
 	// temporary workaround is I just stop waiting after a while
 	timeoutCounter=millis();
 	while (ulSmartConfigFinished == 0)	{
-		Blinker();
+		//Blinker();
 		if (millis() - timeoutCounter > 30000) {
 			Serial.println(F("    Timed out waiting for Smart Config to finish. Hopefully it did anyway"));
 			break;

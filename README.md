@@ -1,3 +1,46 @@
+<h3>This project is abandoned!</h3>
+
+<p>
+I've given up on the CC3000, it's just too buggy and problematic.
+</p>
+
+
+<p>TI themselves say this on the CC3000 page:</p>
+
+<pre>
+TI recommends CC3200 & CC3100 for all new and existing embedded Wi-Fi & Internet of Things applications.
+</pre>
+
+<p>And they've removed references to the CC3000 on their SimpleLink WiFi page at
+<a href="http://www.ti.com/ww/en/simplelink_embedded_wi-fi/home.html">http://www.ti.com/ww/en/simplelink_embedded_wi-fi/home.html</a>
+</p>
+
+<p>
+I'm going to leave these pages here so people searching the web for help don't find dead links,
+but I recommend you abandon your quest to make this half-baked module work. Best of luck to you.
+</p>
+
+<hr/>
+<hr/>
+<hr/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ArduinoCC3000
 =============
 
@@ -29,6 +72,15 @@ reference download the TI documentation at:</p>
 *  Don't sue me if my code blows up your board and burns down your house
 *
 ****************************************************************************
+****************************************************************************
+
+Changes in 1.0.1c:
+
+1. Changed attachInterrupt() from FALLING to LOW to fix problem
+	with the 328 class (Uno, Nano, etc.) from missing the Smart Config
+	HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE event.
+
+
 ****************************************************************************
 
 Changes in 1.0.1b:
